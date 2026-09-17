@@ -1,705 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FF Solo Tournament</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSA Tournament - Free Fire</title>
 
-<style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-body{
-    font-family:Arial,sans-serif;
-    background:#0b0b0b;
-    color:#fff;
-}
-
-.container{
-    width:92%;
-    max-width:1100px;
-    margin:auto;
-}
-
-header{
-    background:linear-gradient(135deg,#ff6a00,#ff2600);
-    padding:25px 0;
-    text-align:center;
-}
-
-header h1{
-    font-size:32px;
-    font-weight:900;
-}
-
-header p{
-    margin-top:8px;
-    font-weight:bold;
-}
-
-.section{
-    margin:25px 0;
-}
-
-.card{
-    background:#171717;
-    border:1px solid #333;
-    border-radius:14px;
-    padding:20px;
-    margin-bottom:20px;
-}
-
-.card h2{
-    color:#ff7a00;
-    margin-bottom:15px;
-}
-
-.info-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-}
-
-.info{
-    background:#222;
-    padding:18px;
-    text-align:center;
-    border-radius:10px;
-}
-
-.info strong{
-    display:block;
-    font-size:25px;
-    color:#ff7a00;
-    margin-bottom:5px;
-}
-
-.rules{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-}
-
-.rule{
-    background:#222;
-    padding:12px;
-    border-radius:8px;
-}
-
-.slots{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-}
-
-.slot{
-    padding:12px;
-    text-align:center;
-    border-radius:8px;
-    font-size:13px;
-    font-weight:bold;
-}
-
-.slot.available{
-    background:#143b1d;
-    border:1px solid #257a38;
-}
-
-.slot.booked{
-    background:#431919;
-    border:1px solid #8b2929;
-    color:#ff7777;
-}
-
-form{
-    display:grid;
-    gap:14px;
-}
-
-label{
-    font-weight:bold;
-    margin-bottom:-8px;
-}
-
-input,
-select{
-    width:100%;
-    padding:13px;
-    border:none;
-    border-radius:8px;
-    background:#252525;
-    color:#fff;
-    outline:none;
-}
-
-input:focus,
-select:focus{
-    border:1px solid #ff6a00;
-}
-
-button{
-    padding:14px;
-    border:none;
-    border-radius:8px;
-    background:linear-gradient(135deg,#ff7a00,#ff3500);
-    color:white;
-    font-weight:900;
-    cursor:pointer;
-}
-
-button:hover{
-    opacity:.9;
-}
-
-button:disabled{
-    opacity:.5;
-    cursor:not-allowed;
-}
-
-#message{
-    display:none;
-    padding:14px;
-    border-radius:8px;
-    margin-top:10px;
-    font-weight:bold;
-}
-
-.success{
-    background:#123d1d;
-    color:#6cff86;
-}
-
-.error{
-    background:#451616;
-    color:#ff7777;
-}
-
-footer{
-    text-align:center;
-    padding:30px;
-    color:#777;
-}
-
-@media(max-width:700px){
-
-    .info-grid{
-        grid-template-columns:repeat(2,1fr);
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    .rules{
-        grid-template-columns:1fr;
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0b0f;
+      color: white;
+      min-height: 100vh;
     }
 
-    .slots{
-        grid-template-columns:repeat(2,1fr);
+    header {
+      background: linear-gradient(135deg, #ff7a00, #ff2d00);
+      padding: 25px 15px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(255, 80, 0, 0.3);
     }
 
-    header h1{
-        font-size:25px;
+    header h1 {
+      font-size: 32px;
+      font-weight: 900;
     }
-}
-</style>
+
+    header p {
+      margin-top: 8px;
+      font-size: 15px;
+      color: #fff;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 35px 10px 20px;
+    }
+
+    .hero h2 {
+      font-size: 28px;
+      color: #ff7a00;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #bbb;
+      font-size: 15px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .info-card {
+      background: #15151d;
+      border: 1px solid #292936;
+      border-radius: 14px;
+      padding: 20px 10px;
+      text-align: center;
+    }
+
+    .info-card .icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .info-card h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .info-card p {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .section {
+      margin: 25px 0;
+    }
+
+    .card {
+      background: #15151d;
+      border: 1px solid #292936;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .card h2 {
+      color: #ff7a00;
+      margin-bottom: 18px;
+      font-size: 22px;
+    }
+
+    .reward {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #101017;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 10px;
+      border: 1px solid #292936;
+    }
+
+    .reward span:last-child {
+      color: #ffd700;
+      font-weight: bold;
+    }
+
+    form {
+      display: grid;
+      gap: 15px;
+    }
+
+    label {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    input {
+      width: 100%;
+      margin-top: 7px;
+      padding: 13px;
+      border-radius: 9px;
+      border: 1px solid #333340;
+      background: #0d0d13;
+      color: white;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #ff7a00;
+    }
+
+    button,
+    .contact-button {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ff7a00, #ff2d00);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    button:hover,
+    .contact-button:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    .contact-button {
+      margin-top: 15px;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .slots {
+      text-align: center;
+      margin-top: 10px;
+      color: #aaa;
+    }
+
+    .slots strong {
+      color: #00ff88;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 10px;
+      color: #777;
+      font-size: 13px;
+    }
+
+    @media (max-width: 650px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 26px;
+      }
+
+      .hero h2 {
+        font-size: 24px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-    <div class="container">
-        <h1>🔥 FF SOLO TOURNAMENT 🔥</h1>
-        <p>48 SLOTS • SOLO MATCH</p>
+  <header>
+    <h1>🔥 MSA TOURNAMENT 🔥</h1>
+    <p>Free Fire Solo Tournament</p>
+  </header>
+
+  <div class="container">
+
+    <div class="hero">
+      <h2>🏆 SOLO BATTLE</h2>
+      <p>Register now and show your skills!</p>
     </div>
-</header>
 
-<main class="container">
+    <div class="info-grid">
 
-    <!-- INFO -->
+      <div class="info-card">
+        <div class="icon">👤</div>
+        <h3>Solo Match</h3>
+        <p>1 Player</p>
+      </div>
+
+      <div class="info-card">
+        <div class="icon">💰</div>
+        <h3>Entry</h3>
+        <p>₹16</p>
+      </div>
+
+      <div class="info-card">
+        <div class="icon">🎁</div>
+        <h3>Booyah Bonus</h3>
+        <p>₹50</p>
+      </div>
+
+    </div>
+
     <section class="section">
+      <div class="card">
+        <h2>🎁 Rewards</h2>
 
-        <div class="info-grid">
-
-            <div class="info">
-                <strong>₹16</strong>
-                Entry Fee
-            </div>
-
-            <div class="info">
-                <strong>48</strong>
-                Total Slots
-            </div>
-
-            <div class="info">
-                <strong>₹50</strong>
-                10 Kills Bonus
-            </div>
-
-            <div class="info">
-                <strong>₹50</strong>
-                Booyah Bonus
-            </div>
-
+        <div class="reward">
+          <span>👑 Booyah</span>
+          <span>+₹50 Bonus</span>
         </div>
 
+      </div>
     </section>
 
-
-    <!-- REWARDS -->
     <section class="section">
+      <div class="card">
 
-        <div class="card">
+        <h2>📝 Register Now</h2>
 
-            <h2>🏆 Rewards</h2>
+        <form id="registrationForm">
 
-            <p>🔥 10 Kills </p>
+          <div>
+            <label for="playerName">Player Name</label>
+            <input
+              type="text"
+              id="playerName"
+              name="playerName"
+              placeholder="Enter your name"
+              required
+            >
+          </div>
 
-            <p style="margin-top:8px;">
-                👑 Booyah = +₹50 Bonus
-            </p>
+          <div>
+            <label for="uid">Free Fire UID</label>
+            <input
+              type="text"
+              id="uid"
+              name="uid"
+              placeholder="Enter your UID"
+              required
+            >
+          </div>
 
+          <div>
+            <label for="ign">In-Game Name</label>
+            <input
+              type="text"
+              id="ign"
+              name="ign"
+              placeholder="Enter your IGN"
+              required
+            >
+          </div>
+
+          <button type="submit">🔥 REGISTER NOW</button>
+
+        </form>
+
+        <div id="message"></div>
+
+        <div class="slots">
+          Available Slots:
+          <strong id="availableSlots">Loading...</strong>
         </div>
 
+      </div>
     </section>
 
-
-    <!-- RULES -->
     <section class="section">
+      <div class="card">
 
-        <div class="card">
+        <h2>📞 Contact</h2>
 
-            <h2>📜 Tournament Rules</h2>
+        <p style="color:#aaa; line-height:1.6;">
+          Registration ya tournament related information ke liye organizer se contact karein.
+        </p>
 
-            <div class="rules">
+        <a
+          href="https://www.instagram.com/msa.tournament?utm_source=qr"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contact-button"
+        >
+          📞 CONTACT NOW
+        </a>
 
-                <div class="rule">
-                    ❌ PC Players Not Allowed
-                </div>
-
-                <div class="rule">
-                    ❌ Panel Users Banned
-                </div>
-
-                <div class="rule">
-                    ❌ No Double Vector
-                </div>
-
-                <div class="rule">
-                    ❌ Revival OFF
-                </div>
-
-                <div class="rule">
-                    ❌ Teaming = Disqualify
-                </div>
-
-                <div class="rule">
-                    ⏱️ 2 Min Waiting Only
-                </div>
-
-                <div class="rule">
-                    ❌ No Refund
-                </div>
-
-                <div class="rule">
-                    ✅ Follow All Rules
-                </div>
-
-            </div>
-
-        </div>
-
+      </div>
     </section>
 
+  </div>
 
-    <!-- SLOTS -->
-    <section class="section">
+  <footer>
+    © 2026 MSA Tournament. All Rights Reserved.
+  </footer>
 
-        <div class="card">
+  <script>
+    async function loadSlots() {
+      try {
+        const response = await fetch('/api/slots');
+        const data = await response.json();
 
-            <h2>🎮 Available Slots</h2>
-
-            <p id="slotCount" style="margin-bottom:15px;">
-                Loading...
-            </p>
-
-            <div
-                class="slots"
-                id="slots"
-            ></div>
-
-        </div>
-
-    </section>
-
-
-    <!-- REGISTRATION -->
-    <section class="section">
-
-        <div class="card">
-
-            <h2>📝 Tournament Registration</h2>
-
-            <form id="registrationForm">
-
-                <label for="playerName">
-                    Player Name
-                </label>
-
-                <input
-                    type="text"
-                    id="playerName"
-                    placeholder="Enter your name"
-                    required
-                >
-
-
-                <label for="uid">
-                    Free Fire UID
-                </label>
-
-                <input
-                    type="text"
-                    id="uid"
-                    placeholder="Enter FF UID"
-                    required
-                >
-
-
-                <label for="ign">
-                    In-Game Name
-                </label>
-
-                <input
-                    type="text"
-                    id="ign"
-                    placeholder="Enter IGN"
-                    required
-                >
-
-
-                <label for="slotSelect">
-                    Select Slot
-                </label>
-
-                <select
-                    id="slotSelect"
-                    required
-                >
-                    <option value="">
-                        Loading slots...
-                    </option>
-                </select>
-
-
-                <button
-                    type="submit"
-                    id="registerButton"
-                >
-                    REGISTER NOW
-                </button>
-
-            </form>
-
-
-            <div id="message"></div>
-
-
-            <p style="margin-top:15px;color:#aaa;">
-                Registration confirmation ke liye organizer se contact karein.
-            </p>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<footer>
-    FF Solo Tournament
-</footer>
-
-
-<script>
-
-/* =========================
-   ELEMENTS
-========================= */
-
-const slotsContainer =
-    document.getElementById("slots");
-
-const slotSelect =
-    document.getElementById("slotSelect");
-
-const slotCount =
-    document.getElementById("slotCount");
-
-const form =
-    document.getElementById("registrationForm");
-
-const registerButton =
-    document.getElementById("registerButton");
-
-const message =
-    document.getElementById("message");
-
-
-/* =========================
-   MESSAGE
-========================= */
-
-function showMessage(text,type){
-
-    message.textContent = text;
-
-    message.className = type;
-
-    message.style.display = "block";
-}
-
-
-/* =========================
-   LOAD SLOTS
-========================= */
-
-async function loadSlots(){
-
-    try{
-
-        const response =
-            await fetch("/api/slots");
-
-        if(!response.ok){
-
-            throw new Error(
-                "Could not load slots."
-            );
+        if (data.available !== undefined) {
+          document.getElementById('availableSlots').textContent =
+            data.available;
         }
-
-        const data =
-            await response.json();
-
-        const bookedSlots =
-            data.bookedSlots.map(Number);
-
-        slotsContainer.innerHTML = "";
-
-        slotSelect.innerHTML =
-            '<option value="">Select available slot</option>';
-
-        let available = 0;
-
-
-        for(
-            let i = 1;
-            i <= data.totalSlots;
-            i++
-        ){
-
-            const slot =
-                document.createElement("div");
-
-            slot.classList.add("slot");
-
-
-            if(bookedSlots.includes(i)){
-
-                slot.classList.add("booked");
-
-                slot.textContent =
-                    "Slot " + i + " • Booked";
-
-            }else{
-
-                slot.classList.add("available");
-
-                slot.textContent =
-                    "Slot " + i + " • Available";
-
-                available++;
-
-
-                const option =
-                    document.createElement("option");
-
-                option.value = i;
-
-                option.textContent =
-                    "Slot " + i;
-
-                slotSelect.appendChild(option);
-            }
-
-
-            slotsContainer.appendChild(slot);
-        }
-
-
-        slotCount.textContent =
-            available +
-            " / " +
-            data.totalSlots +
-            " Available";
-
-
-        if(available === 0){
-
-            slotSelect.innerHTML =
-                '<option value="">Tournament Full</option>';
-
-            registerButton.disabled = true;
-
-        }else{
-
-            registerButton.disabled = false;
-
-        }
-
-    }catch(error){
-
-        console.error(error);
-
-        slotCount.textContent =
-            "Unable to load";
-
-        showMessage(
-            "Server se slots load nahi ho rahe.",
-            "error"
-        );
+      } catch (error) {
+        document.getElementById('availableSlots').textContent =
+          'Check Again';
+      }
     }
-}
 
+    document
+      .getElementById('registrationForm')
+      .addEventListener('submit', async function (e) {
 
-/* =========================
-   REGISTRATION
-========================= */
+        e.preventDefault();
 
-form.addEventListener(
-    "submit",
-    async function(event){
-
-        event.preventDefault();
-
-        registerButton.disabled = true;
-
-        message.style.display = "none";
-
+        const message = document.getElementById('message');
 
         const playerName =
-            document
-                .getElementById("playerName")
-                .value
-                .trim();
-
+          document.getElementById('playerName').value.trim();
 
         const uid =
-            document
-                .getElementById("uid")
-                .value
-                .trim();
-
+          document.getElementById('uid').value.trim();
 
         const ign =
+          document.getElementById('ign').value.trim();
+
+        message.textContent = 'Registering...';
+        message.style.color = '#ffaa00';
+
+        try {
+
+          const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              playerName: playerName,
+              uid: uid,
+              ign: ign
+            })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+
+            message.textContent =
+              data.message || 'Registration successful!';
+
+            message.style.color = '#00ff88';
+
             document
-                .getElementById("ign")
-                .value
-                .trim();
+              .getElementById('registrationForm')
+              .reset();
 
+            loadSlots();
 
-        const slot =
-            document
-                .getElementById("slotSelect")
-                .value;
+          } else {
 
+            message.textContent =
+              data.error || 'Registration failed.';
 
-        try{
+            message.style.color = '#ff5555';
+          }
 
-            const response =
-                await fetch(
-                    "/api/register",
-                    {
-                        method:"POST",
+        } catch (error) {
 
-                        headers:{
-                            "Content-Type":
-                                "application/json"
-                        },
+          message.textContent =
+            'Server se connection nahi ho pa raha.';
 
-                        body:JSON.stringify({
-
-                            playerName:playerName,
-
-                            uid:uid,
-
-                            ign:ign,
-
-                            slot:slot
-
-                        })
-                    }
-                );
-
-
-            const data =
-                await response.json();
-
-
-            if(!response.ok){
-
-                throw new Error(
-                    data.message ||
-                    "Registration failed."
-                );
-            }
-
-
-            showMessage(
-                "Registration successful!",
-                "success"
-            );
-
-
-            form.reset();
-
-            await loadSlots();
-
-
-        }catch(error){
-
-            console.error(error);
-
-            showMessage(
-                error.message ||
-                "Registration failed.",
-                "error"
-            );
+          message.style.color = '#ff5555';
         }
 
+      });
 
-        registerButton.disabled = false;
+    loadSlots();
 
-    }
-);
-
-
-/* =========================
-   INITIAL LOAD
-========================= */
-
-loadSlots();
-
-
-/* =========================
-   AUTO REFRESH
-========================= */
-
-setInterval(
-    loadSlots,
-    10000
-);
-
-</script>
+    setInterval(loadSlots, 10000);
+  </script>
 
 </body>
 </html>
