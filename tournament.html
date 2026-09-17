@@ -3,217 +3,306 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MSA Tournament - Free Fire</title>
+  <title>FF Solo Tournament</title>
 
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
-      font-family: Arial, sans-serif;
-      background: #0b0b0f;
-      color: white;
+      background: #080b12;
+      color: #fff;
       min-height: 100vh;
     }
 
     header {
-      background: linear-gradient(135deg, #ff7a00, #ff2d00);
+      background: linear-gradient(135deg, #111827, #05070c);
       padding: 25px 15px;
       text-align: center;
-      box-shadow: 0 4px 20px rgba(255, 80, 0, 0.3);
+      border-bottom: 2px solid #ff9d00;
     }
 
     header h1 {
-      font-size: 32px;
-      font-weight: 900;
+      font-size: 34px;
+      color: #ffb000;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px rgba(255, 176, 0, 0.5);
     }
 
     header p {
       margin-top: 8px;
+      color: #cbd5e1;
       font-size: 15px;
-      color: #fff;
     }
 
     .container {
       width: 92%;
-      max-width: 900px;
-      margin: auto;
+      max-width: 1100px;
+      margin: 30px auto;
     }
 
     .hero {
+      background: linear-gradient(135deg, #171c2b, #0c1019);
+      border: 1px solid #293244;
+      border-radius: 18px;
+      padding: 30px 20px;
       text-align: center;
-      padding: 35px 10px 20px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
     }
 
     .hero h2 {
-      font-size: 28px;
-      color: #ff7a00;
+      font-size: 30px;
       margin-bottom: 10px;
     }
 
-    .hero p {
-      color: #bbb;
-      font-size: 15px;
+    .hero .highlight {
+      color: #ffb000;
     }
 
-    .info-grid {
+    .hero p {
+      color: #aeb8c8;
+      line-height: 1.6;
+    }
+
+    .cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 15px;
-      margin: 25px 0;
+      margin-top: 25px;
     }
 
-    .info-card {
-      background: #15151d;
-      border: 1px solid #292936;
+    .card {
+      background: #111722;
+      border: 1px solid #263043;
       border-radius: 14px;
       padding: 20px 10px;
       text-align: center;
     }
 
-    .info-card .icon {
-      font-size: 28px;
+    .card .icon {
+      font-size: 27px;
       margin-bottom: 8px;
     }
 
-    .info-card h3 {
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-
-    .info-card p {
-      color: #aaa;
-      font-size: 14px;
-    }
-
-    .section {
-      margin: 25px 0;
-    }
-
-    .card {
-      background: #15151d;
-      border: 1px solid #292936;
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    }
-
-    .card h2 {
-      color: #ff7a00;
-      margin-bottom: 18px;
+    .card h3 {
+      color: #ffb000;
       font-size: 22px;
     }
 
-    .reward {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #101017;
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 10px;
-      border: 1px solid #292936;
+    .card p {
+      color: #9da8ba;
+      margin-top: 5px;
+      font-size: 13px;
     }
 
-    .reward span:last-child {
-      color: #ffd700;
-      font-weight: bold;
+    .section {
+      margin-top: 30px;
+      background: #101621;
+      border: 1px solid #263043;
+      border-radius: 16px;
+      padding: 25px;
     }
 
-    form {
+    .section h2 {
+      color: #ffb000;
+      margin-bottom: 18px;
+      font-size: 23px;
+    }
+
+    .prize-box {
       display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 15px;
     }
 
-    label {
-      font-size: 14px;
-      color: #ccc;
+    .prize {
+      background: #171e2b;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid #303b50;
     }
 
-    input {
-      width: 100%;
-      margin-top: 7px;
+    .prize strong {
+      display: block;
+      font-size: 26px;
+      color: #fff;
+      margin-top: 5px;
+    }
+
+    .prize span {
+      color: #9da8ba;
+      font-size: 13px;
+    }
+
+    .rules {
+      list-style: none;
+    }
+
+    .rules li {
+      background: #171e2b;
+      margin-bottom: 10px;
       padding: 13px;
       border-radius: 9px;
-      border: 1px solid #333340;
-      background: #0d0d13;
-      color: white;
-      outline: none;
-      font-size: 15px;
+      color: #d5dbe5;
     }
 
-    input:focus {
-      border-color: #ff7a00;
-    }
-
-    button,
-    .contact-button {
-      display: inline-block;
-      width: 100%;
-      text-align: center;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #ff7a00, #ff2d00);
-      color: white;
-      font-size: 16px;
+    .rules li::before {
+      content: "✓";
+      color: #ffb000;
       font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-      transition: 0.2s;
+      margin-right: 10px;
     }
 
-    button:hover,
-    .contact-button:hover {
-      transform: translateY(-2px);
-      opacity: 0.95;
+    .slot-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      color: #cbd5e1;
     }
 
-    .contact-button {
-      margin-top: 15px;
-    }
-
-    #message {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 14px;
+    .slot-count {
+      color: #ffb000;
+      font-weight: bold;
     }
 
     .slots {
-      text-align: center;
-      margin-top: 10px;
-      color: #aaa;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
     }
 
-    .slots strong {
-      color: #00ff88;
+    .slot {
+      padding: 12px 5px;
+      text-align: center;
+      border-radius: 7px;
+      background: #182131;
+      border: 1px solid #2c394d;
+      color: #8e9bad;
+      font-size: 13px;
+    }
+
+    .slot.available {
+      color: #7ee787;
+      border-color: #2b633b;
+    }
+
+    .slot.booked {
+      color: #ff7070;
+      background: #27191d;
+      border-color: #6a2d35;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      border: 1px solid #303b50;
+      background: #080d15;
+      color: white;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #ffb000;
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #ffb000, #ff7900);
+      color: #111;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .register-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 157, 0, 0.3);
+    }
+
+    .contact {
+      text-align: center;
+    }
+
+    .contact p {
+      color: #aeb8c8;
+      margin-bottom: 15px;
+    }
+
+    .dm-btn {
+      display: inline-block;
+      padding: 13px 25px;
+      background: #ffb000;
+      color: #111;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
     }
 
     footer {
       text-align: center;
-      padding: 30px 10px;
-      color: #777;
+      padding: 25px 15px;
+      margin-top: 35px;
+      border-top: 1px solid #222b3a;
+      color: #697588;
       font-size: 13px;
     }
 
-    @media (max-width: 650px) {
-      .info-grid {
-        grid-template-columns: 1fr;
+    @media (max-width: 800px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
       }
 
+      .slots {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    @media (max-width: 500px) {
       header h1 {
         font-size: 26px;
       }
 
       .hero h2 {
-        font-size: 24px;
+        font-size: 23px;
       }
 
-      .card {
-        padding: 20px;
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .prize-box {
+        grid-template-columns: 1fr;
+      }
+
+      .slots {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .section {
+        padding: 18px;
       }
     }
   </style>
@@ -221,219 +310,342 @@
 
 <body>
 
+  <!-- HEADER -->
   <header>
-    <h1>🔥 MSA TOURNAMENT 🔥</h1>
-    <p>Free Fire Solo Tournament</p>
+    <h1>🔥 FF Solo Tournament 🔥</h1>
+    <p>48 Slots • Fast Registration • Competitive Matches</p>
   </header>
 
   <div class="container">
 
-    <div class="hero">
-      <h2>🏆 SOLO BATTLE</h2>
-      <p>Register now and show your skills!</p>
-    </div>
+    <!-- HERO -->
+    <section class="hero">
+      <h2>
+        Free Fire <span class="highlight">Solo Tournament</span>
+      </h2>
 
-    <div class="info-grid">
+      <p>
+        Show your skills and fight for Booyah!
+        Limited to only 48 players.
+      </p>
+    </section>
 
-      <div class="info-card">
-        <div class="icon">👤</div>
-        <h3>Solo Match</h3>
-        <p>1 Player</p>
-      </div>
 
-      <div class="info-card">
-        <div class="icon">💰</div>
-        <h3>Entry</h3>
-        <p>₹16</p>
-      </div>
+    <!-- INFO CARDS -->
+    <section class="cards">
 
-      <div class="info-card">
-        <div class="icon">🎁</div>
-        <h3>Booyah Bonus</h3>
-        <p>₹50</p>
-      </div>
-
-    </div>
-
-    <section class="section">
       <div class="card">
-        <h2>🎁 Rewards</h2>
+        <div class="icon">🎟️</div>
+        <h3>₹16</h3>
+        <p>Entry Fee</p>
+      </div>
 
-        <div class="reward">
-          <span>👑 Booyah</span>
-          <span>+₹50 Bonus</span>
+      <div class="card">
+        <div class="icon">👥</div>
+        <h3>48</h3>
+        <p>Total Slots</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">👑</div>
+        <h3>₹50</h3>
+        <p>Booyah Bonus</p>
+      </div>
+
+    </section>
+
+
+    <!-- REWARDS -->
+    <section class="section">
+
+      <h2>🏆 Tournament Rewards</h2>
+
+      <div class="prize-box">
+
+        <div class="prize">
+          👑
+          <strong>₹50</strong>
+          <span>Booyah Bonus</span>
+        </div>
+
+        <div class="prize">
+          💰
+          <strong>₹16</strong>
+          <span>Entry Fee</span>
         </div>
 
       </div>
+
     </section>
 
+
+    <!-- RULES -->
     <section class="section">
-      <div class="card">
 
-        <h2>📝 Register Now</h2>
+      <h2>📜 Tournament Rules</h2>
 
-        <form id="registrationForm">
+      <ul class="rules">
+        <li>Only 48 players can participate.</li>
+        <li>Entry fee is ₹16 per player.</li>
+        <li>Booyah bonus: ₹50.</li>
+        <li>Players must provide correct Free Fire details.</li>
+        <li>Do not use hacks, scripts or unfair methods.</li>
+        <li>Match room details will be shared with registered players.</li>
+        <li>Organizer's final decision applies to tournament disputes.</li>
+      </ul>
 
-          <div>
-            <label for="playerName">Player Name</label>
-            <input
-              type="text"
-              id="playerName"
-              name="playerName"
-              placeholder="Enter your name"
-              required
-            >
-          </div>
+    </section>
 
-          <div>
-            <label for="uid">Free Fire UID</label>
-            <input
-              type="text"
-              id="uid"
-              name="uid"
-              placeholder="Enter your UID"
-              required
-            >
-          </div>
 
-          <div>
-            <label for="ign">In-Game Name</label>
-            <input
-              type="text"
-              id="ign"
-              name="ign"
-              placeholder="Enter your IGN"
-              required
-            >
-          </div>
+    <!-- SLOTS -->
+    <section class="section">
 
-          <button type="submit">🔥 REGISTER NOW</button>
+      <h2>🎮 Available Slots</h2>
 
-        </form>
+      <div class="slot-header">
+        <span>48 Player Slots</span>
 
-        <div id="message"></div>
+        <span class="slot-count" id="slotCount">
+          48 / 48 Available
+        </span>
+      </div>
 
-        <div class="slots">
-          Available Slots:
-          <strong id="availableSlots">Loading...</strong>
+      <div class="slots" id="slots"></div>
+
+    </section>
+
+
+    <!-- REGISTRATION -->
+    <section class="section">
+
+      <h2>📝 Register Now</h2>
+
+      <form id="registrationForm">
+
+        <div class="form-group">
+          <label>Player Name</label>
+
+          <input
+            type="text"
+            id="playerName"
+            placeholder="Enter your name"
+            required
+          >
         </div>
 
-      </div>
+
+        <div class="form-group">
+          <label>Free Fire UID</label>
+
+          <input
+            type="number"
+            id="uid"
+            placeholder="Enter your FF UID"
+            required
+          >
+        </div>
+
+
+        <div class="form-group">
+          <label>Game Name / IGN</label>
+
+          <input
+            type="text"
+            id="ign"
+            placeholder="Enter your in-game name"
+            required
+          >
+        </div>
+
+
+        <div class="form-group">
+          <label>Select Slot</label>
+
+          <select id="slotSelect" required>
+            <option value="">Select available slot</option>
+          </select>
+        </div>
+
+
+        <button class="register-btn" type="submit">
+          🚀 REGISTER NOW
+        </button>
+
+      </form>
+
     </section>
 
-    <section class="section">
-      <div class="card">
 
-        <h2>📞 Contact</h2>
+    <!-- CONTACT -->
+    <section class="section contact">
 
-        <p style="color:#aaa; line-height:1.6;">
-          Registration ya tournament related information ke liye organizer se contact karein.
-        </p>
+      <h2>📞 Contact</h2>
 
-        <a
-          href="https://www.instagram.com/msa.tournament?utm_source=qr"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="contact-button"
-        >
-          📞 CONTACT NOW
-        </a>
+      <p>
+        Registration ya tournament related information ke liye organizer se contact karein.
+      </p>
 
-      </div>
+      <a
+        href="https://www.instagram.com/msa.tournament?utm_source=qr"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="dm-btn"
+      >
+        📞 CONTACT NOW
+      </a>
+
     </section>
 
   </div>
 
+
+  <!-- FOOTER -->
   <footer>
-    © 2026 MSA Tournament. All Rights Reserved.
+    © 2026 FF Solo Tournament • All Rights Reserved
   </footer>
 
-  <script>
-    async function loadSlots() {
-      try {
-        const response = await fetch('/api/slots');
-        const data = await response.json();
 
-        if (data.available !== undefined) {
-          document.getElementById('availableSlots').textContent =
-            data.available;
+  <script>
+
+    /* =========================
+       SLOT SYSTEM
+    ========================= */
+
+    const totalSlots = 48;
+
+    /*
+      Abhi demo ke liye koi slot booked nahi hai.
+      Baad mein yahan booked slot numbers add kar sakte ho.
+
+      Example:
+      const bookedSlots = [2, 5, 10];
+    */
+
+    const bookedSlots = [];
+
+    const slotsContainer = document.getElementById("slots");
+    const slotSelect = document.getElementById("slotSelect");
+    const slotCount = document.getElementById("slotCount");
+
+
+    function createSlots() {
+
+      slotsContainer.innerHTML = "";
+
+      slotSelect.innerHTML =
+        '<option value="">Select available slot</option>';
+
+      let available = 0;
+
+
+      for (let i = 1; i <= totalSlots; i++) {
+
+        const slot = document.createElement("div");
+
+        slot.classList.add("slot");
+
+        slot.textContent = "Slot " + i;
+
+
+        if (bookedSlots.includes(i)) {
+
+          slot.classList.add("booked");
+
+          slot.textContent = "Booked";
+
+        } else {
+
+          slot.classList.add("available");
+
+          available++;
+
+
+          const option = document.createElement("option");
+
+          option.value = i;
+
+          option.textContent = "Slot " + i;
+
+          slotSelect.appendChild(option);
         }
-      } catch (error) {
-        document.getElementById('availableSlots').textContent =
-          'Check Again';
+
+
+        slotsContainer.appendChild(slot);
       }
+
+
+      slotCount.textContent =
+        available + " / " + totalSlots + " Available";
     }
 
+
+    createSlots();
+
+
+    /* =========================
+       REGISTRATION
+    ========================= */
+
     document
-      .getElementById('registrationForm')
-      .addEventListener('submit', async function (e) {
+      .getElementById("registrationForm")
+      .addEventListener("submit", function(event) {
 
-        e.preventDefault();
+        event.preventDefault();
 
-        const message = document.getElementById('message');
 
-        const playerName =
-          document.getElementById('playerName').value.trim();
+        const name =
+          document.getElementById("playerName").value.trim();
+
 
         const uid =
-          document.getElementById('uid').value.trim();
+          document.getElementById("uid").value.trim();
+
 
         const ign =
-          document.getElementById('ign').value.trim();
+          document.getElementById("ign").value.trim();
 
-        message.textContent = 'Registering...';
-        message.style.color = '#ffaa00';
 
-        try {
+        const selectedSlot =
+          document.getElementById("slotSelect").value;
 
-          const response = await fetch('/api/register', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              playerName: playerName,
-              uid: uid,
-              ign: ign
-            })
-          });
 
-          const data = await response.json();
+        if (!selectedSlot) {
 
-          if (response.ok) {
+          alert("Please select an available slot.");
 
-            message.textContent =
-              data.message || 'Registration successful!';
-
-            message.style.color = '#00ff88';
-
-            document
-              .getElementById('registrationForm')
-              .reset();
-
-            loadSlots();
-
-          } else {
-
-            message.textContent =
-              data.error || 'Registration failed.';
-
-            message.style.color = '#ff5555';
-          }
-
-        } catch (error) {
-
-          message.textContent =
-            'Server se connection nahi ho pa raha.';
-
-          message.style.color = '#ff5555';
+          return;
         }
+
+
+        alert(
+          "Registration submitted!\n\n" +
+          "Player: " + name + "\n" +
+          "UID: " + uid + "\n" +
+          "IGN: " + ign + "\n" +
+          "Slot: " + selectedSlot
+        );
+
+
+        /*
+          IMPORTANT:
+
+          Ye sirf frontend demo hai.
+          Is form ka data abhi database mein save nahi hota.
+
+          Real tournament website ke liye:
+          - Registration database
+          - Payment verification
+          - Automatic slot booking
+          - Admin panel
+          - Player list
+          - Results
+          - WhatsApp/Telegram/Instagram integration
+
+          backend/database ke saath connect karna hoga.
+        */
 
       });
 
-    loadSlots();
-
-    setInterval(loadSlots, 10000);
   </script>
 
 </body>
