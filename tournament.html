@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF Solo Tournament</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#0b0b0b;
+    color:#fff;
+}
+
+.container{
+    width:92%;
+    max-width:1100px;
+    margin:auto;
+}
+
+header{
+    background:linear-gradient(135deg,#ff6a00,#ff2600);
+    padding:25px 0;
+    text-align:center;
+}
+
+header h1{
+    font-size:32px;
+    font-weight:900;
+}
+
+header p{
+    margin-top:8px;
+    font-weight:bold;
+}
+
+.section{
+    margin:25px 0;
+}
+
+.card{
+    background:#171717;
+    border:1px solid #333;
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    color:#ff7a00;
+    margin-bottom:15px;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.info{
+    background:#222;
+    padding:18px;
+    text-align:center;
+    border-radius:10px;
+}
+
+.info strong{
+    display:block;
+    font-size:25px;
+    color:#ff7a00;
+    margin-bottom:5px;
+}
+
+.rules{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.rule{
+    background:#222;
+    padding:12px;
+    border-radius:8px;
+}
+
+.slots{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.slot{
+    padding:12px;
+    text-align:center;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.slot.available{
+    background:#143b1d;
+    border:1px solid #257a38;
+}
+
+.slot.booked{
+    background:#431919;
+    border:1px solid #8b2929;
+    color:#ff7777;
+}
+
+form{
+    display:grid;
+    gap:14px;
+}
+
+label{
+    font-weight:bold;
+    margin-bottom:-8px;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:8px;
+    background:#252525;
+    color:#fff;
+    outline:none;
+}
+
+input:focus,
+select:focus{
+    border:1px solid #ff6a00;
+}
+
+button{
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:linear-gradient(135deg,#ff7a00,#ff3500);
+    color:white;
+    font-weight:900;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+#message{
+    display:none;
+    padding:14px;
+    border-radius:8px;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+.success{
+    background:#123d1d;
+    color:#6cff86;
+}
+
+.error{
+    background:#451616;
+    color:#ff7777;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+@media(max-width:700px){
+
+    .info-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .rules{
+        grid-template-columns:1fr;
+    }
+
+    .slots{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    header h1{
+        font-size:25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <h1>🔥 FF SOLO TOURNAMENT 🔥</h1>
+        <p>48 SLOTS • SOLO MATCH</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- INFO -->
+    <section class="section">
+
+        <div class="info-grid">
+
+            <div class="info">
+                <strong>₹16</strong>
+                Entry Fee
+            </div>
+
+            <div class="info">
+                <strong>48</strong>
+                Total Slots
+            </div>
+
+            <div class="info">
+                <strong>₹50</strong>
+                10 Kills Bonus
+            </div>
+
+            <div class="info">
+                <strong>₹50</strong>
+                Booyah Bonus
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- REWARDS -->
+    <section class="section">
+
+        <div class="card">
+
+            <h2>🏆 Rewards</h2>
+
+            <p>🔥 10 Kills = +₹50 Bonus</p>
+
+            <p style="margin-top:8px;">
+                👑 Booyah = +₹50 Bonus
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- RULES -->
+    <section class="section">
+
+        <div class="card">
+
+            <h2>📜 Tournament Rules</h2>
+
+            <div class="rules">
+
+                <div class="rule">
+                    ❌ PC Players Not Allowed
+                </div>
+
+                <div class="rule">
+                    ❌ Panel Users Banned
+                </div>
+
+                <div class="rule">
+                    ❌ No Double Vector
+                </div>
+
+                <div class="rule">
+                    ❌ Revival OFF
+                </div>
+
+                <div class="rule">
+                    ❌ Teaming = Disqualify
+                </div>
+
+                <div class="rule">
+                    ⏱️ 2 Min Waiting Only
+                </div>
+
+                <div class="rule">
+                    ❌ No Refund
+                </div>
+
+                <div class="rule">
+                    ✅ Follow All Rules
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SLOTS -->
+    <section class="section">
+
+        <div class="card">
+
+            <h2>🎮 Available Slots</h2>
+
+            <p id="slotCount" style="margin-bottom:15px;">
+                Loading...
+            </p>
+
+            <div
+                class="slots"
+                id="slots"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- REGISTRATION -->
+    <section class="section">
+
+        <div class="card">
+
+            <h2>📝 Tournament Registration</h2>
+
+            <form id="registrationForm">
+
+                <label for="playerName">
+                    Player Name
+                </label>
+
+                <input
+                    type="text"
+                    id="playerName"
+                    placeholder="Enter your name"
+                    required
+                >
+
+
+                <label for="uid">
+                    Free Fire UID
+                </label>
+
+                <input
+                    type="text"
+                    id="uid"
+                    placeholder="Enter FF UID"
+                    required
+                >
+
+
+                <label for="ign">
+                    In-Game Name
+                </label>
+
+                <input
+                    type="text"
+                    id="ign"
+                    placeholder="Enter IGN"
+                    required
+                >
+
+
+                <label for="slotSelect">
+                    Select Slot
+                </label>
+
+                <select
+                    id="slotSelect"
+                    required
+                >
+                    <option value="">
+                        Loading slots...
+                    </option>
+                </select>
+
+
+                <button
+                    type="submit"
+                    id="registerButton"
+                >
+                    REGISTER NOW
+                </button>
+
+            </form>
+
+
+            <div id="message"></div>
+
+
+            <p style="margin-top:15px;color:#aaa;">
+                Registration confirmation ke liye organizer se contact karein.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    FF Solo Tournament
+</footer>
+
+
+<script>
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const slotsContainer =
+    document.getElementById("slots");
+
+const slotSelect =
+    document.getElementById("slotSelect");
+
+const slotCount =
+    document.getElementById("slotCount");
+
+const form =
+    document.getElementById("registrationForm");
+
+const registerButton =
+    document.getElementById("registerButton");
+
+const message =
+    document.getElementById("message");
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(text,type){
+
+    message.textContent = text;
+
+    message.className = type;
+
+    message.style.display = "block";
+}
+
+
+/* =========================
+   LOAD SLOTS
+========================= */
+
+async function loadSlots(){
+
+    try{
+
+        const response =
+            await fetch("/api/slots");
+
+        if(!response.ok){
+
+            throw new Error(
+                "Could not load slots."
+            );
+        }
+
+        const data =
+            await response.json();
+
+        const bookedSlots =
+            data.bookedSlots.map(Number);
+
+        slotsContainer.innerHTML = "";
+
+        slotSelect.innerHTML =
+            '<option value="">Select available slot</option>';
+
+        let available = 0;
+
+
+        for(
+            let i = 1;
+            i <= data.totalSlots;
+            i++
+        ){
+
+            const slot =
+                document.createElement("div");
+
+            slot.classList.add("slot");
+
+
+            if(bookedSlots.includes(i)){
+
+                slot.classList.add("booked");
+
+                slot.textContent =
+                    "Slot " + i + " • Booked";
+
+            }else{
+
+                slot.classList.add("available");
+
+                slot.textContent =
+                    "Slot " + i + " • Available";
+
+                available++;
+
+
+                const option =
+                    document.createElement("option");
+
+                option.value = i;
+
+                option.textContent =
+                    "Slot " + i;
+
+                slotSelect.appendChild(option);
+            }
+
+
+            slotsContainer.appendChild(slot);
+        }
+
+
+        slotCount.textContent =
+            available +
+            " / " +
+            data.totalSlots +
+            " Available";
+
+
+        if(available === 0){
+
+            slotSelect.innerHTML =
+                '<option value="">Tournament Full</option>';
+
+            registerButton.disabled = true;
+
+        }else{
+
+            registerButton.disabled = false;
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        slotCount.textContent =
+            "Unable to load";
+
+        showMessage(
+            "Server se slots load nahi ho rahe.",
+            "error"
+        );
+    }
+}
+
+
+/* =========================
+   REGISTRATION
+========================= */
+
+form.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+        registerButton.disabled = true;
+
+        message.style.display = "none";
+
+
+        const playerName =
+            document
+                .getElementById("playerName")
+                .value
+                .trim();
+
+
+        const uid =
+            document
+                .getElementById("uid")
+                .value
+                .trim();
+
+
+        const ign =
+            document
+                .getElementById("ign")
+                .value
+                .trim();
+
+
+        const slot =
+            document
+                .getElementById("slotSelect")
+                .value;
+
+
+        try{
+
+            const response =
+                await fetch(
+                    "/api/register",
+                    {
+                        method:"POST",
+
+                        headers:{
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:JSON.stringify({
+
+                            playerName:playerName,
+
+                            uid:uid,
+
+                            ign:ign,
+
+                            slot:slot
+
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if(!response.ok){
+
+                throw new Error(
+                    data.message ||
+                    "Registration failed."
+                );
+            }
+
+
+            showMessage(
+                "Registration successful!",
+                "success"
+            );
+
+
+            form.reset();
+
+            await loadSlots();
+
+
+        }catch(error){
+
+            console.error(error);
+
+            showMessage(
+                error.message ||
+                "Registration failed.",
+                "error"
+            );
+        }
+
+
+        registerButton.disabled = false;
+
+    }
+);
+
+
+/* =========================
+   INITIAL LOAD
+========================= */
+
+loadSlots();
+
+
+/* =========================
+   AUTO REFRESH
+========================= */
+
+setInterval(
+    loadSlots,
+    10000
+);
+
+</script>
+
+</body>
+</html>

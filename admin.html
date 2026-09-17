@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>FF Tournament - Admin Panel</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #080b12;
+      color: #fff;
+    }
+
+    header {
+      background: #111722;
+      padding: 20px;
+      border-bottom: 2px solid #ffb000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: #ffb000;
+      font-size: 25px;
+    }
+
+    .admin-badge {
+      background: #ffb000;
+      color: #111;
+      padding: 8px 13px;
+      border-radius: 7px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .container {
+      width: 94%;
+      max-width: 1200px;
+      margin: 25px auto;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      background: #111722;
+      border: 1px solid #293447;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .stat h2 {
+      color: #ffb000;
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .stat p {
+      color: #9ca8b9;
+      font-size: 13px;
+    }
+
+    .section {
+      background: #101621;
+      border: 1px solid #293447;
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 25px;
+    }
+
+    .section h2 {
+      color: #ffb000;
+      margin-bottom: 18px;
+      font-size: 21px;
+    }
+
+    /* SLOTS */
+
+    .slots {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
+    }
+
+    .slot {
+      padding: 13px 5px;
+      border-radius: 7px;
+      text-align: center;
+      background: #182131;
+      border: 1px solid #304057;
+      color: #7ee787;
+      font-size: 13px;
+      transition: 0.2s;
+    }
+
+    .slot.booked {
+      background: #291a1e;
+      border-color: #71313a;
+      color: #ff7070;
+    }
+
+    .slot:hover {
+      transform: translateY(-1px);
+    }
+
+    .slot small {
+      display: block;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    /* TOOLBAR */
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      padding: 12px;
+      background: #080d15;
+      color: #fff;
+      border: 1px solid #303d52;
+      border-radius: 7px;
+      outline: none;
+    }
+
+    .toolbar input {
+      flex: 1;
+    }
+
+    /* TABLE */
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+    }
+
+    th {
+      background: #182131;
+      color: #ffb000;
+      padding: 13px;
+      text-align: left;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #252f40;
+      color: #cbd5e1;
+    }
+
+    .status {
+      padding: 5px 9px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .paid {
+      background: #173a25;
+      color: #7ee787;
+    }
+
+    .pending {
+      background: #3b3218;
+      color: #ffd166;
+    }
+
+    button {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 11px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 2px;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-green {
+      background: #38a169;
+      color: white;
+    }
+
+    .btn-red {
+      background: #c53030;
+      color: white;
+    }
+
+    .btn-yellow {
+      background: #ffb000;
+      color: #111;
+    }
+
+    .btn-blue {
+      background: #3182ce;
+      color: white;
+    }
+
+    /* RESULT */
+
+    .result-form {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 10px;
+    }
+
+    .result-form input {
+      padding: 12px;
+      background: #080d15;
+      border: 1px solid #303d52;
+      color: #fff;
+      border-radius: 7px;
+      outline: none;
+    }
+
+    .server-status {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #7ee787;
+    }
+
+    .bonus {
+      color: #ffb000;
+      font-weight: bold;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 25px;
+      color: #8b98aa;
+    }
+
+    .danger-zone {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .danger-zone p {
+      color: #9ca8b9;
+      font-size: 13px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 800px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .slots {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .result-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 500px) {
+      header {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .section {
+        padding: 15px;
+      }
+
+      .toolbar {
+        flex-direction: column;
+      }
+
+      .danger-zone {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🔥 FF Tournament Admin</h1>
+  <div class="admin-badge">ADMIN PANEL</div>
+</header>
+
+<div class="container">
+
+  <!-- STATS -->
+
+  <div class="stats">
+
+    <div class="stat">
+      <h2 id="totalPlayers">0</h2>
+      <p>Total Players</p>
+    </div>
+
+    <div class="stat">
+      <h2 id="bookedSlots">0 / 48</h2>
+      <p>Booked Slots</p>
+    </div>
+
+    <div class="stat">
+      <h2 id="paidPlayers">0</h2>
+      <p>Paid Players</p>
+    </div>
+
+    <div class="stat">
+      <h2 id="totalBonus">₹0</h2>
+      <p>Total Bonus</p>
+    </div>
+
+  </div>
+
+
+  <!-- SERVER STATUS -->
+
+  <div class="section">
+
+    <h2>🟢 Server Status</h2>
+
+    <div id="serverStatus" class="server-status">
+      Checking server...
+    </div>
+
+  </div>
+
+
+  <!-- SLOTS -->
+
+  <div class="section">
+
+    <h2>🎯 Tournament Slots</h2>
+
+    <div id="slots" class="slots">
+      Loading slots...
+    </div>
+
+  </div>
+
+
+  <!-- PLAYERS -->
+
+  <div class="section">
+
+    <h2>👥 Registered Players</h2>
+
+    <div class="toolbar">
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search player, UID, IGN or slot..."
+      >
+
+      <select id="paymentFilter">
+        <option value="all">All Payments</option>
+        <option value="paid">Paid</option>
+        <option value="pending">Pending</option>
+      </select>
+
+      <button class="btn-blue" onclick="loadData()">
+        🔄 Refresh
+      </button>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Slot</th>
+            <th>Player</th>
+            <th>UID</th>
+            <th>IGN</th>
+            <th>Payment</th>
+            <th>Kills</th>
+            <th>Booyah</th>
+            <th>Bonus</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="playersTable">
+
+          <tr>
+            <td colspan="9" class="empty">
+              Loading players...
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- UPDATE RESULT -->
+
+  <div class="section">
+
+    <h2>🏆 Update Player Result</h2>
+
+    <div class="result-form">
+
+      <input
+        type="number"
+        id="resultSlot"
+        placeholder="Slot number"
+        min="1"
+        max="48"
+      >
+
+      <input
+        type="number"
+        id="resultKills"
+        placeholder="Kills"
+        min="0"
+      >
+
+      <input
+        type="text"
+        id="resultBooyah"
+        placeholder="Booyah: yes/no"
+      >
+
+      <button
+        class="btn-yellow"
+        onclick="updateResult()"
+      >
+        Update
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- DANGER ZONE -->
+
+  <div class="section">
+
+    <h2>⚠️ Danger Zone</h2>
+
+    <div class="danger-zone">
+
+      <p>
+        Clear All Players permanently removes every registered player.
+      </p>
+
+      <button
+        class="btn-red"
+        onclick="clearAllPlayers()"
+      >
+        🗑 Clear All Players
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  let players = [];
+
+
+  /* =========================
+     LOAD ALL DATA
+  ========================= */
+
+  async function loadData() {
+
+    try {
+
+      const [playersResponse, statsResponse, slotsResponse] =
+        await Promise.all([
+          fetch("/api/players"),
+          fetch("/api/stats"),
+          fetch("/api/slots")
+        ]);
+
+
+      if (!playersResponse.ok ||
+          !statsResponse.ok ||
+          !slotsResponse.ok) {
+
+        throw new Error("API request failed");
+
+      }
+
+
+      players = await playersResponse.json();
+
+      const stats = await statsResponse.json();
+
+      const slots = await slotsResponse.json();
+
+
+      updateStats(stats);
+
+      renderSlots(slots);
+
+      renderPlayers();
+
+
+      document.getElementById("serverStatus").textContent =
+        "Server connected successfully ✅";
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.getElementById("serverStatus").textContent =
+        "Server connection failed ❌";
+
+    }
+
+  }
+
+
+  /* =========================
+     UPDATE STATS
+  ========================= */
+
+  function updateStats(stats) {
+
+    document.getElementById("totalPlayers").textContent =
+      stats.totalPlayers || 0;
+
+
+    document.getElementById("bookedSlots").textContent =
+      `${stats.bookedSlots || 0} / ${stats.totalSlots || 48}`;
+
+
+    document.getElementById("paidPlayers").textContent =
+      stats.paidPlayers || 0;
+
+
+    document.getElementById("totalBonus").textContent =
+      `₹${stats.totalBonus || 0}`;
+
+  }
+
+
+  /* =========================
+     RENDER SLOTS
+  ========================= */
+
+  function renderSlots(slotsData) {
+
+    const container = document.getElementById("slots");
+
+    container.innerHTML = "";
+
+
+    for (let i = 1; i <= slotsData.totalSlots; i++) {
+
+      const player =
+        players.find(
+          p => Number(p.slot) === i
+        );
+
+
+      const slot = document.createElement("div");
+
+      slot.className =
+        player
+          ? "slot booked"
+          : "slot";
+
+
+      if (player) {
+
+        slot.innerHTML = `
+          SLOT ${i}
+          <small>${escapeHTML(player.ign)}</small>
+        `;
+
+      } else {
+
+        slot.innerHTML = `
+          SLOT ${i}
+          <small>AVAILABLE</small>
+        `;
+
+      }
+
+
+      container.appendChild(slot);
+
+    }
+
+  }
+
+
+  /* =========================
+     RENDER PLAYERS
+  ========================= */
+
+  function renderPlayers() {
+
+    const table =
+      document.getElementById("playersTable");
+
+
+    const search =
+      document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    const paymentFilter =
+      document.getElementById("paymentFilter").value;
+
+
+    let filteredPlayers =
+      players.filter(player => {
+
+        const searchMatch =
+
+          String(player.playerName || "")
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          String(player.uid || "")
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          String(player.ign || "")
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          String(player.slot || "")
+            .includes(search);
+
+
+        const paymentMatch =
+
+          paymentFilter === "all"
+          ||
+          player.payment === paymentFilter;
+
+
+        return searchMatch && paymentMatch;
+
+      });
+
+
+    if (filteredPlayers.length === 0) {
+
+      table.innerHTML = `
+        <tr>
+          <td colspan="9" class="empty">
+            No players found.
+          </td>
+        </tr>
+      `;
+
+      return;
+
+    }
+
+
+    table.innerHTML =
+      filteredPlayers.map(player => {
+
+        const paymentClass =
+          player.payment === "paid"
+            ? "paid"
+            : "pending";
+
+
+        const paymentText =
+          player.payment === "paid"
+            ? "PAID"
+            : "PENDING";
+
+
+        return `
+
+          <tr>
+
+            <td>
+              <strong>#${player.slot}</strong>
+            </td>
+
+            <td>
+              ${escapeHTML(player.playerName)}
+            </td>
+
+            <td>
+              ${escapeHTML(player.uid)}
+            </td>
+
+            <td>
+              ${escapeHTML(player.ign)}
+            </td>
+
+            <td>
+
+              <span class="status ${paymentClass}">
+                ${paymentText}
+              </span>
+
+              <br>
+
+              <button
+                class="${player.payment === "paid" ? "btn-yellow" : "btn-green"}"
+                onclick="togglePayment(${player.slot})"
+              >
+                ${player.payment === "paid"
+                  ? "Set Pending"
+                  : "Mark Paid"}
+              </button>
+
+            </td>
+
+            <td>
+              ${Number(player.kills || 0)}
+            </td>
+
+            <td>
+              ${player.booyah === true ? "🏆 YES" : "NO"}
+            </td>
+
+            <td class="bonus">
+              ₹${Number(player.bonus || 0)}
+            </td>
+
+            <td>
+
+              <button
+                class="btn-blue"
+                onclick="fillResult(${player.slot})"
+              >
+                Result
+              </button>
+
+              <button
+                class="btn-red"
+                onclick="removePlayer(${player.slot})"
+              >
+                Remove
+              </button>
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }).join("");
+
+  }
+
+
+  /* =========================
+     PAYMENT TOGGLE
+  ========================= */
+
+  async function togglePayment(slot) {
+
+    const player =
+      players.find(
+        p => Number(p.slot) === Number(slot)
+      );
+
+
+    if (!player) {
+
+      alert("Player not found.");
+
+      return;
+
+    }
+
+
+    const newPayment =
+      player.payment === "paid"
+        ? "pending"
+        : "paid";
+
+
+    try {
+
+      const response = await fetch(
+        `/api/players/${slot}/payment`,
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            payment: newPayment
+          })
+
+        }
+      );
+
+
+      const data = await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.message || "Payment update failed"
+        );
+
+      }
+
+
+      await loadData();
+
+
+    } catch (error) {
+
+      alert(error.message);
+
+    }
+
+  }
+
+
+  /* =========================
+     UPDATE RESULT
+  ========================= */
+
+  async function updateResult() {
+
+    const slot =
+      Number(
+        document.getElementById("resultSlot").value
+      );
+
+
+    const kills =
+      Number(
+        document.getElementById("resultKills").value
+      );
+
+
+    const booyahText =
+      document
+        .getElementById("resultBooyah")
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    if (!slot) {
+
+      alert("Please enter slot number.");
+
+      return;
+
+    }
+
+
+    if (kills < 0 || Number.isNaN(kills)) {
+
+      alert("Please enter valid kills.");
+
+      return;
+
+    }
+
+
+    const booyah =
+      booyahText === "yes"
+      ||
+      booyahText === "y"
+      ||
+      booyahText === "true"
+      ||
+      booyahText === "1";
+
+
+    try {
+
+      const response = await fetch(
+        `/api/players/${slot}/result`,
+        {
+
+          method: "PATCH",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            kills: kills,
+            booyah: booyah
+          })
+
+        }
+      );
+
+
+      const data = await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.message || "Result update failed"
+        );
+
+      }
+
+
+      alert(
+        `Result updated successfully!\nBonus: ₹${data.player.bonus}`
+      );
+
+
+      document.getElementById("resultSlot").value = "";
+      document.getElementById("resultKills").value = "";
+      document.getElementById("resultBooyah").value = "";
+
+
+      await loadData();
+
+
+    } catch (error) {
+
+      alert(error.message);
+
+    }
+
+  }
+
+
+  /* =========================
+     FILL RESULT FORM
+  ========================= */
+
+  function fillResult(slot) {
+
+    const player =
+      players.find(
+        p => Number(p.slot) === Number(slot)
+      );
+
+
+    if (!player) {
+
+      alert("Player not found.");
+
+      return;
+
+    }
+
+
+    document.getElementById("resultSlot").value =
+      player.slot;
+
+
+    document.getElementById("resultKills").value =
+      player.kills || 0;
+
+
+    document.getElementById("resultBooyah").value =
+      player.booyah ? "yes" : "no";
+
+
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth"
+    });
+
+  }
+
+
+  /* =========================
+     REMOVE PLAYER
+  ========================= */
+
+  async function removePlayer(slot) {
+
+    const player =
+      players.find(
+        p => Number(p.slot) === Number(slot)
+      );
+
+
+    if (!player) {
+
+      alert("Player not found.");
+
+      return;
+
+    }
+
+
+    const confirmed =
+      confirm(
+        `Remove ${player.playerName} from Slot ${slot}?`
+      );
+
+
+    if (!confirmed) return;
+
+
+    try {
+
+      const response = await fetch(
+        `/api/players/${slot}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+
+      const data = await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.message || "Remove failed"
+        );
+
+      }
+
+
+      await loadData();
+
+
+    } catch (error) {
+
+      alert(error.message);
+
+    }
+
+  }
+
+
+  /* =========================
+     CLEAR ALL PLAYERS
+  ========================= */
+
+  async function clearAllPlayers() {
+
+    if (players.length === 0) {
+
+      alert("There are no registered players.");
+
+      return;
+
+    }
+
+
+    const firstConfirm =
+      confirm(
+        `Are you sure you want to remove ALL ${players.length} players?`
+      );
+
+
+    if (!firstConfirm) return;
+
+
+    const secondConfirm =
+      confirm(
+        "This action cannot be undone. Continue?"
+      );
+
+
+    if (!secondConfirm) return;
+
+
+    try {
+
+      for (const player of players) {
+
+        const response =
+          await fetch(
+            `/api/players/${player.slot}`,
+            {
+              method: "DELETE"
+            }
+          );
+
+
+        if (!response.ok) {
+
+          console.error(
+            `Could not remove slot ${player.slot}`
+          );
+
+        }
+
+      }
+
+
+      alert("All players removed successfully.");
+
+      await loadData();
+
+
+    } catch (error) {
+
+      alert(
+        "Error while clearing players."
+      );
+
+      console.error(error);
+
+    }
+
+  }
+
+
+  /* =========================
+     ESCAPE HTML
+  ========================= */
+
+  function escapeHTML(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================
+     SEARCH
+  ========================= */
+
+  document
+    .getElementById("searchInput")
+    .addEventListener(
+      "input",
+      renderPlayers
+    );
+
+
+  document
+    .getElementById("paymentFilter")
+    .addEventListener(
+      "change",
+      renderPlayers
+    );
+
+
+  /* =========================
+     INITIAL LOAD
+  ========================= */
+
+  loadData();
+
+
+  /* =========================
+     AUTO REFRESH
+  ========================= */
+
+  setInterval(
+    loadData,
+    10000
+  );
+
+</script>
+
+</body>
+</html>
