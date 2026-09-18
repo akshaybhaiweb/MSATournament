@@ -9,19 +9,18 @@
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
+      margin: 0;
+      padding: 20px;
       font-family: Arial, sans-serif;
       background: #080808;
-      color: #fff;
-      padding: 20px;
+      color: white;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1000px;
       margin: auto;
     }
 
@@ -31,165 +30,58 @@
       margin-bottom: 20px;
     }
 
-    .top-bar {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
     button {
-      border: none;
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px 18px;
+      border: 0;
       border-radius: 8px;
-      padding: 10px 15px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .refresh {
       background: #2196f3;
       color: white;
-    }
-
-    .home {
-      background: #444;
-      color: white;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .status {
       text-align: center;
-      padding: 12px;
+      background: #151515;
+      padding: 15px;
       border-radius: 8px;
       margin-bottom: 20px;
-      background: #222;
-    }
-
-    .online {
-      color: #00e676;
-    }
-
-    .offline {
-      color: #ff5252;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .stat {
-      background: #151515;
-      border: 1px solid #292929;
-      border-radius: 10px;
-      padding: 18px;
-      text-align: center;
-    }
-
-    .stat h2 {
-      color: #ff9800;
-      font-size: 28px;
-    }
-
-    .stat p {
-      color: #aaa;
-      margin-top: 5px;
-    }
-
-    .message {
-      text-align: center;
-      padding: 20px;
-      border-radius: 10px;
-      background: #151515;
-      color: #aaa;
-      margin-top: 15px;
     }
 
     .table-wrap {
       overflow-x: auto;
-      background: #111;
-      border-radius: 10px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 900px;
+      background: #111;
     }
 
     th,
     td {
       padding: 12px;
-      border-bottom: 1px solid #292929;
+      border: 1px solid #292929;
       text-align: center;
     }
 
     th {
-      background: #1d1d1d;
+      background: #222;
       color: #ff9800;
     }
 
-    td {
-      color: #ddd;
-    }
-
-    tr:hover {
-      background: #181818;
-    }
-
-    .pending {
-      color: #ffca28;
-      font-weight: bold;
-    }
-
-    .paid {
-      color: #00e676;
-      font-weight: bold;
-    }
-
-    .actions {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn-paid {
-      background: #00a86b;
-      color: white;
-    }
-
-    .btn-pending {
-      background: #ff9800;
-      color: black;
-    }
-
-    .btn-result {
-      background: #2196f3;
-      color: white;
-    }
-
-    .btn-delete {
-      background: #e53935;
-      color: white;
-    }
-
-    .loading {
+    .empty {
       text-align: center;
-      padding: 25px;
-      color: #ff9800;
+      padding: 30px;
+      background: #151515;
+      border-radius: 8px;
+      color: #aaa;
     }
 
-    @media (max-width: 600px) {
-      body {
-        padding: 10px;
-      }
-
-      h1 {
-        font-size: 24px;
-      }
+    .error {
+      color: #ff5252;
     }
   </style>
 </head>
@@ -200,441 +92,125 @@
 
     <h1>🔥 FF Tournament Admin 🔥</h1>
 
-    <div class="top-bar">
-      <button class="refresh" onclick="loadData()">🔄 Refresh</button>
-      <button class="home" onclick="window.location.href='/'">🏠 Tournament</button>
-    </div>
+    <button onclick="loadPlayers()">🔄 Refresh Players</button>
 
-    <div id="serverStatus" class="status">
-      Checking server...
-    </div>
-
-    <div class="stats">
-      <div class="stat">
-        <h2 id="totalPlayers">0</h2>
-        <p>Total Players</p>
-      </div>
-
-      <div class="stat">
-        <h2 id="availableSlots">48</h2>
-        <p>Available Slots</p>
-      </div>
-
-      <div class="stat">
-        <h2 id="paidPlayers">0</h2>
-        <p>Paid</p>
-      </div>
-
-      <div class="stat">
-        <h2 id="pendingPlayers">0</h2>
-        <p>Pending</p>
-      </div>
-    </div>
-
-    <div id="message" class="message">
+    <div id="status" class="status">
       Loading players...
     </div>
 
-    <div class="table-wrap" id="tableWrap" style="display:none;">
-      <table>
-        <thead>
-          <tr>
-            <th>Slot</th>
-            <th>Player Name</th>
-            <th>UID</th>
-            <th>IGN</th>
-            <th>Payment</th>
-            <th>Kills</th>
-            <th>Booyah</th>
-            <th>Bonus</th>
-            <th>Registered</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody id="playersTable"></tbody>
-      </table>
-    </div>
+    <div id="content"></div>
 
   </div>
 
   <script>
-    /*
-      IMPORTANT:
-      Admin page and API are served from the same Render server.
-      This avoids hard-coded localhost / wrong-origin API problems.
-    */
-    const API_BASE = window.location.origin;
-
-    const TOTAL_SLOTS = 48;
-
-    function escapeHTML(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    async function checkServer() {
-      const status = document.getElementById("serverStatus");
-
-      try {
-        const response = await fetch(
-          API_BASE + "/api/health",
-          {
-            method: "GET",
-            cache: "no-store"
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Server returned " + response.status);
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          status.innerHTML =
-            '🟢 Server Online — ' +
-            escapeHTML(data.server || "FF Tournament Server");
-
-          status.className = "status online";
-        } else {
-          throw new Error("Health check failed");
-        }
-
-      } catch (error) {
-        console.error("Health error:", error);
-
-        status.innerHTML =
-          "🔴 Server connection failed";
-
-        status.className = "status offline";
-      }
-    }
-
     async function loadPlayers() {
-      const message = document.getElementById("message");
-      const tableWrap = document.getElementById("tableWrap");
-      const table = document.getElementById("playersTable");
 
-      message.style.display = "block";
-      message.innerHTML = "Loading players...";
-      tableWrap.style.display = "none";
+      const status = document.getElementById("status");
+      const content = document.getElementById("content");
+
+      status.textContent = "Loading players...";
+      content.innerHTML = "";
 
       try {
-        const response = await fetch(
-          API_BASE + "/api/players",
-          {
-            method: "GET",
-            cache: "no-store",
-            headers: {
-              "Accept": "application/json"
-            }
-          }
-        );
+
+        const response = await fetch("/api/players", {
+          method: "GET",
+          cache: "no-store"
+        });
 
         if (!response.ok) {
           throw new Error(
-            "API error: HTTP " + response.status
+            "HTTP " + response.status
           );
         }
 
         const players = await response.json();
 
-        console.log("Players API response:", players);
+        console.log("API:", players);
 
         if (!Array.isArray(players)) {
-          throw new Error("Invalid players response");
+          throw new Error(
+            "API did not return an array"
+          );
         }
 
-        updateStats(players);
-
         if (players.length === 0) {
-          message.innerHTML =
-            "📭 No players registered yet.";
 
-          tableWrap.style.display = "none";
+          status.textContent = "API connected ✅";
+
+          content.innerHTML = `
+            <div class="empty">
+              📭 No players registered yet.
+            </div>
+          `;
+
           return;
         }
 
-        players.sort(
-          (a, b) =>
-            Number(a.slot || 0) -
-            Number(b.slot || 0)
-        );
+        status.textContent =
+          "Players loaded: " + players.length + " ✅";
 
-        table.innerHTML = players.map(player => {
+        let html = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Slot</th>
+                  <th>Player Name</th>
+                  <th>UID</th>
+                  <th>IGN</th>
+                  <th>Payment</th>
+                  <th>Kills</th>
+                  <th>Booyah</th>
+                  <th>Bonus</th>
+                </tr>
+              </thead>
 
-          const payment =
-            String(player.payment || "pending").toLowerCase();
+              <tbody>
+        `;
 
-          const paymentClass =
-            payment === "paid" ? "paid" : "pending";
+        players.forEach(function(player) {
 
-          const registered =
-            player.registered_at
-              ? new Date(player.registered_at).toLocaleString()
-              : "-";
-
-          return `
+          html += `
             <tr>
-              <td>
-                <strong>${escapeHTML(player.slot)}</strong>
-              </td>
-
-              <td>
-                ${escapeHTML(player.player_name)}
-              </td>
-
-              <td>
-                ${escapeHTML(player.uid)}
-              </td>
-
-              <td>
-                ${escapeHTML(player.ign)}
-              </td>
-
-              <td class="${paymentClass}">
-                ${escapeHTML(payment)}
-              </td>
-
-              <td>
-                ${escapeHTML(player.kills ?? 0)}
-              </td>
-
-              <td>
-                ${player.booyah ? "👑 YES" : "NO"}
-              </td>
-
-              <td>
-                ₹${escapeHTML(player.bonus ?? 0)}
-              </td>
-
-              <td>
-                ${escapeHTML(registered)}
-              </td>
-
-              <td>
-                <div class="actions">
-
-                  ${
-                    payment === "paid"
-                    ? `
-                      <button
-                        class="btn-pending"
-                        onclick="updatePayment(${Number(player.slot)}, 'pending')">
-                        Pending
-                      </button>
-                    `
-                    : `
-                      <button
-                        class="btn-paid"
-                        onclick="updatePayment(${Number(player.slot)}, 'paid')">
-                        Paid
-                      </button>
-                    `
-                  }
-
-                  <button
-                    class="btn-result"
-                    onclick="updateResult(${Number(player.slot)})">
-                    Result
-                  </button>
-
-                  <button
-                    class="btn-delete"
-                    onclick="deletePlayer(${Number(player.slot)})">
-                    Delete
-                  </button>
-
-                </div>
-              </td>
+              <td>${player.slot ?? "-"}</td>
+              <td>${player.player_name ?? "-"}</td>
+              <td>${player.uid ?? "-"}</td>
+              <td>${player.ign ?? "-"}</td>
+              <td>${player.payment ?? "pending"}</td>
+              <td>${player.kills ?? 0}</td>
+              <td>${player.booyah ? "YES 👑" : "NO"}</td>
+              <td>₹${player.bonus ?? 0}</td>
             </tr>
           `;
 
-        }).join("");
+        });
 
-        message.style.display = "none";
-        tableWrap.style.display = "block";
+        html += `
+              </tbody>
+            </table>
+          </div>
+        `;
 
-      } catch (error) {
-        console.error("Load players error:", error);
-
-        message.innerHTML =
-          "❌ Unable to load players.<br><br>" +
-          "<small>" +
-          escapeHTML(error.message) +
-          "</small>";
-
-        tableWrap.style.display = "none";
-      }
-    }
-
-    function updateStats(players) {
-      const total = players.length;
-
-      const paid = players.filter(
-        player =>
-          String(player.payment || "").toLowerCase() === "paid"
-      ).length;
-
-      const pending = total - paid;
-
-      const available =
-        Math.max(0, TOTAL_SLOTS - total);
-
-      document.getElementById("totalPlayers").textContent =
-        total;
-
-      document.getElementById("availableSlots").textContent =
-        available;
-
-      document.getElementById("paidPlayers").textContent =
-        paid;
-
-      document.getElementById("pendingPlayers").textContent =
-        pending;
-    }
-
-    async function updatePayment(slot, payment) {
-      try {
-        const response = await fetch(
-          API_BASE + "/api/players/" + slot + "/payment",
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: JSON.stringify({
-              payment: payment
-            })
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(
-            data.message || "Payment status update failed"
-          );
-        }
-
-        await loadPlayers();
+        content.innerHTML = html;
 
       } catch (error) {
-        console.error(error);
-        alert("❌ " + error.message);
+
+        console.error("Players API Error:", error);
+
+        status.textContent = "❌ API request failed";
+
+        content.innerHTML = `
+          <div class="empty error">
+            Failed to fetch players.<br><br>
+            ${error.message}
+          </div>
+        `;
       }
     }
 
-    async function updateResult(slot) {
-      const killsInput = prompt(
-        "Enter kills for slot " + slot + ":",
-        "0"
-      );
-
-      if (killsInput === null) {
-        return;
-      }
-
-      const kills = Number(killsInput);
-
-      if (
-        !Number.isInteger(kills) ||
-        kills < 0
-      ) {
-        alert("❌ Enter a valid kills number.");
-        return;
-      }
-
-      const booyahInput = confirm(
-        "Did this player get Booyah?"
-      );
-
-      try {
-        const response = await fetch(
-          API_BASE + "/api/players/" + slot + "/result",
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: JSON.stringify({
-              kills: kills,
-              booyah: booyahInput
-            })
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(
-            data.message || "Result update failed"
-          );
-        }
-
-        await loadPlayers();
-
-      } catch (error) {
-        console.error(error);
-        alert("❌ " + error.message);
-      }
-    }
-
-    async function deletePlayer(slot) {
-      const confirmed = confirm(
-        "Delete player from slot " +
-        slot +
-        "?"
-      );
-
-      if (!confirmed) {
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          API_BASE + "/api/players/" + slot,
-          {
-            method: "DELETE",
-            headers: {
-              "Accept": "application/json"
-            }
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(
-            data.message || "Delete failed"
-          );
-        }
-
-        await loadPlayers();
-
-      } catch (error) {
-        console.error(error);
-        alert("❌ " + error.message);
-      }
-    }
-
-    async function loadData() {
-      await checkServer();
-      await loadPlayers();
-    }
-
-    // Initial load
-    loadData();
-
-    // Auto refresh every 10 seconds
-    setInterval(loadData, 10000);
+    // Load automatically when Admin opens
+    loadPlayers();
   </script>
 
 </body>
