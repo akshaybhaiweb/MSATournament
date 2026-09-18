@@ -2,196 +2,641 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FF Tournament Admin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FF Tournament Admin</title>
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body{
-  background:#0b0b0f;
-  color:#fff;
-  min-height:100vh;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #080808;
+      color: #fff;
+      padding: 20px;
+    }
 
-header{
-  background:#15151d;
-  padding:22px;
-  text-align:center;
-  border-bottom:1px solid #292936;
-}
+    .container {
+      max-width: 1200px;
+      margin: auto;
+    }
 
-header h1{font-size:25px;margin-bottom:6px}
-header p{color:#999;font-size:13px}
+    h1 {
+      text-align: center;
+      color: #ff9800;
+      margin-bottom: 20px;
+    }
 
-.container{
-  width:95%;
-  max-width:1400px;
-  margin:25px auto;
-}
+    .top-bar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
 
-.status,.section,.card{
-  background:#15151d;
-  border:1px solid #292936;
-  border-radius:12px;
-}
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-.status{
-  padding:15px;
-  margin-bottom:20px;
-}
+    .refresh {
+      background: #2196f3;
+      color: white;
+    }
 
-.dot{
-  display:inline-block;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#777;
-  margin-right:8px;
-}
+    .home {
+      background: #444;
+      color: white;
+    }
 
-.dot.online{
-  background:#00d26a;
-  box-shadow:0 0 10px #00d26a;
-}
+    .status {
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background: #222;
+    }
 
-.dot.offline{
-  background:#ff3333;
-}
+    .online {
+      color: #00e676;
+    }
 
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-  margin-bottom:20px;
-}
+    .offline {
+      color: #ff5252;
+    }
 
-.card{
-  padding:20px;
-  text-align:center;
-}
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
 
-.card h3{
-  color:#999;
-  font-size:12px;
-  margin-bottom:10px;
-}
+    .stat {
+      background: #151515;
+      border: 1px solid #292929;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+    }
 
-.card strong{font-size:27px}
+    .stat h2 {
+      color: #ff9800;
+      font-size: 28px;
+    }
 
-.section{
-  padding:20px;
-  margin-bottom:20px;
-}
+    .stat p {
+      color: #aaa;
+      margin-top: 5px;
+    }
 
-.section h2{margin-bottom:18px}
+    .message {
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      background: #151515;
+      color: #aaa;
+      margin-top: 15px;
+    }
 
-.slots{
-  display:grid;
-  grid-template-columns:repeat(12,1fr);
-  gap:8px;
-}
+    .table-wrap {
+      overflow-x: auto;
+      background: #111;
+      border-radius: 10px;
+    }
 
-.slot{
-  background:#20202a;
-  border:1px solid #30303c;
-  border-radius:8px;
-  min-height:55px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  font-size:12px;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
 
-.slot.booked{
-  background:#3a2020;
-  border-color:#9b3b3b;
-}
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #292929;
+      text-align: center;
+    }
 
-.slot b{
-  font-size:15px;
-  margin-bottom:3px;
-}
+    th {
+      background: #1d1d1d;
+      color: #ff9800;
+    }
 
-.slot small{
-  color:#999;
-  max-width:90%;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
+    td {
+      color: #ddd;
+    }
 
-.toolbar{
-  display:flex;
-  gap:10px;
-  margin-bottom:15px;
-}
+    tr:hover {
+      background: #181818;
+    }
 
-input,select{
-  background:#20202a;
-  color:white;
-  border:1px solid #383844;
-  border-radius:8px;
-  padding:11px;
-  outline:none;
-}
+    .pending {
+      color: #ffca28;
+      font-weight: bold;
+    }
 
-.search{flex:1}
+    .paid {
+      color: #00e676;
+      font-weight: bold;
+    }
 
-.table-wrap{overflow-x:auto}
+    .actions {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:950px;
-}
+    .btn-paid {
+      background: #00a86b;
+      color: white;
+    }
 
-th,td{
-  padding:11px;
-  border-bottom:1px solid #292936;
-  text-align:left;
-  font-size:13px;
-}
+    .btn-pending {
+      background: #ff9800;
+      color: black;
+    }
 
-th{
-  color:#999;
-  background:#191921;
-  font-size:11px;
-}
+    .btn-result {
+      background: #2196f3;
+      color: white;
+    }
 
-.badge{
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:10px;
-  font-weight:bold;
-}
+    .btn-delete {
+      background: #e53935;
+      color: white;
+    }
 
-.paid{
-  background:#123d29;
-  color:#52e89b;
-}
+    .loading {
+      text-align: center;
+      padding: 25px;
+      color: #ff9800;
+    }
 
-.pending{
-  background:#403515;
-  color:#f4c84a;
-}
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
 
-button{
-  border:0;
-  border-radius:7px;
-  padding:8px 10px;
-  cursor:pointer;
-  color:white;
-  font-weight:bold;
-  font-size:11px;
-  margin:2px;
-}
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
 
-button:hover{opacity:.8}
+<body>
 
-.paid-btn{background:#198754}
-.pending-btn{background:#765f16}
-.result-btn{background:#3159a8}
-.remove-btn{background:#a83232
+  <div class="container">
+
+    <h1>🔥 FF Tournament Admin 🔥</h1>
+
+    <div class="top-bar">
+      <button class="refresh" onclick="loadData()">🔄 Refresh</button>
+      <button class="home" onclick="window.location.href='/'">🏠 Tournament</button>
+    </div>
+
+    <div id="serverStatus" class="status">
+      Checking server...
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <h2 id="totalPlayers">0</h2>
+        <p>Total Players</p>
+      </div>
+
+      <div class="stat">
+        <h2 id="availableSlots">48</h2>
+        <p>Available Slots</p>
+      </div>
+
+      <div class="stat">
+        <h2 id="paidPlayers">0</h2>
+        <p>Paid</p>
+      </div>
+
+      <div class="stat">
+        <h2 id="pendingPlayers">0</h2>
+        <p>Pending</p>
+      </div>
+    </div>
+
+    <div id="message" class="message">
+      Loading players...
+    </div>
+
+    <div class="table-wrap" id="tableWrap" style="display:none;">
+      <table>
+        <thead>
+          <tr>
+            <th>Slot</th>
+            <th>Player Name</th>
+            <th>UID</th>
+            <th>IGN</th>
+            <th>Payment</th>
+            <th>Kills</th>
+            <th>Booyah</th>
+            <th>Bonus</th>
+            <th>Registered</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="playersTable"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    /*
+      IMPORTANT:
+      Admin page and API are served from the same Render server.
+      This avoids hard-coded localhost / wrong-origin API problems.
+    */
+    const API_BASE = window.location.origin;
+
+    const TOTAL_SLOTS = 48;
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    async function checkServer() {
+      const status = document.getElementById("serverStatus");
+
+      try {
+        const response = await fetch(
+          API_BASE + "/api/health",
+          {
+            method: "GET",
+            cache: "no-store"
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Server returned " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          status.innerHTML =
+            '🟢 Server Online — ' +
+            escapeHTML(data.server || "FF Tournament Server");
+
+          status.className = "status online";
+        } else {
+          throw new Error("Health check failed");
+        }
+
+      } catch (error) {
+        console.error("Health error:", error);
+
+        status.innerHTML =
+          "🔴 Server connection failed";
+
+        status.className = "status offline";
+      }
+    }
+
+    async function loadPlayers() {
+      const message = document.getElementById("message");
+      const tableWrap = document.getElementById("tableWrap");
+      const table = document.getElementById("playersTable");
+
+      message.style.display = "block";
+      message.innerHTML = "Loading players...";
+      tableWrap.style.display = "none";
+
+      try {
+        const response = await fetch(
+          API_BASE + "/api/players",
+          {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+              "Accept": "application/json"
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            "API error: HTTP " + response.status
+          );
+        }
+
+        const players = await response.json();
+
+        console.log("Players API response:", players);
+
+        if (!Array.isArray(players)) {
+          throw new Error("Invalid players response");
+        }
+
+        updateStats(players);
+
+        if (players.length === 0) {
+          message.innerHTML =
+            "📭 No players registered yet.";
+
+          tableWrap.style.display = "none";
+          return;
+        }
+
+        players.sort(
+          (a, b) =>
+            Number(a.slot || 0) -
+            Number(b.slot || 0)
+        );
+
+        table.innerHTML = players.map(player => {
+
+          const payment =
+            String(player.payment || "pending").toLowerCase();
+
+          const paymentClass =
+            payment === "paid" ? "paid" : "pending";
+
+          const registered =
+            player.registered_at
+              ? new Date(player.registered_at).toLocaleString()
+              : "-";
+
+          return `
+            <tr>
+              <td>
+                <strong>${escapeHTML(player.slot)}</strong>
+              </td>
+
+              <td>
+                ${escapeHTML(player.player_name)}
+              </td>
+
+              <td>
+                ${escapeHTML(player.uid)}
+              </td>
+
+              <td>
+                ${escapeHTML(player.ign)}
+              </td>
+
+              <td class="${paymentClass}">
+                ${escapeHTML(payment)}
+              </td>
+
+              <td>
+                ${escapeHTML(player.kills ?? 0)}
+              </td>
+
+              <td>
+                ${player.booyah ? "👑 YES" : "NO"}
+              </td>
+
+              <td>
+                ₹${escapeHTML(player.bonus ?? 0)}
+              </td>
+
+              <td>
+                ${escapeHTML(registered)}
+              </td>
+
+              <td>
+                <div class="actions">
+
+                  ${
+                    payment === "paid"
+                    ? `
+                      <button
+                        class="btn-pending"
+                        onclick="updatePayment(${Number(player.slot)}, 'pending')">
+                        Pending
+                      </button>
+                    `
+                    : `
+                      <button
+                        class="btn-paid"
+                        onclick="updatePayment(${Number(player.slot)}, 'paid')">
+                        Paid
+                      </button>
+                    `
+                  }
+
+                  <button
+                    class="btn-result"
+                    onclick="updateResult(${Number(player.slot)})">
+                    Result
+                  </button>
+
+                  <button
+                    class="btn-delete"
+                    onclick="deletePlayer(${Number(player.slot)})">
+                    Delete
+                  </button>
+
+                </div>
+              </td>
+            </tr>
+          `;
+
+        }).join("");
+
+        message.style.display = "none";
+        tableWrap.style.display = "block";
+
+      } catch (error) {
+        console.error("Load players error:", error);
+
+        message.innerHTML =
+          "❌ Unable to load players.<br><br>" +
+          "<small>" +
+          escapeHTML(error.message) +
+          "</small>";
+
+        tableWrap.style.display = "none";
+      }
+    }
+
+    function updateStats(players) {
+      const total = players.length;
+
+      const paid = players.filter(
+        player =>
+          String(player.payment || "").toLowerCase() === "paid"
+      ).length;
+
+      const pending = total - paid;
+
+      const available =
+        Math.max(0, TOTAL_SLOTS - total);
+
+      document.getElementById("totalPlayers").textContent =
+        total;
+
+      document.getElementById("availableSlots").textContent =
+        available;
+
+      document.getElementById("paidPlayers").textContent =
+        paid;
+
+      document.getElementById("pendingPlayers").textContent =
+        pending;
+    }
+
+    async function updatePayment(slot, payment) {
+      try {
+        const response = await fetch(
+          API_BASE + "/api/players/" + slot + "/payment",
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({
+              payment: payment
+            })
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.message || "Payment status update failed"
+          );
+        }
+
+        await loadPlayers();
+
+      } catch (error) {
+        console.error(error);
+        alert("❌ " + error.message);
+      }
+    }
+
+    async function updateResult(slot) {
+      const killsInput = prompt(
+        "Enter kills for slot " + slot + ":",
+        "0"
+      );
+
+      if (killsInput === null) {
+        return;
+      }
+
+      const kills = Number(killsInput);
+
+      if (
+        !Number.isInteger(kills) ||
+        kills < 0
+      ) {
+        alert("❌ Enter a valid kills number.");
+        return;
+      }
+
+      const booyahInput = confirm(
+        "Did this player get Booyah?"
+      );
+
+      try {
+        const response = await fetch(
+          API_BASE + "/api/players/" + slot + "/result",
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({
+              kills: kills,
+              booyah: booyahInput
+            })
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.message || "Result update failed"
+          );
+        }
+
+        await loadPlayers();
+
+      } catch (error) {
+        console.error(error);
+        alert("❌ " + error.message);
+      }
+    }
+
+    async function deletePlayer(slot) {
+      const confirmed = confirm(
+        "Delete player from slot " +
+        slot +
+        "?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          API_BASE + "/api/players/" + slot,
+          {
+            method: "DELETE",
+            headers: {
+              "Accept": "application/json"
+            }
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.message || "Delete failed"
+          );
+        }
+
+        await loadPlayers();
+
+      } catch (error) {
+        console.error(error);
+        alert("❌ " + error.message);
+      }
+    }
+
+    async function loadData() {
+      await checkServer();
+      await loadPlayers();
+    }
+
+    // Initial load
+    loadData();
+
+    // Auto refresh every 10 seconds
+    setInterval(loadData, 10000);
+  </script>
+
+</body>
+</html>
+```
