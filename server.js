@@ -1,4 +1,3 @@
-```js
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -14,26 +13,43 @@ const BOOYAH_BONUS = 50;
 const DATA_DIR = path.join(__dirname, "data");
 const DATA_FILE = path.join(DATA_DIR, "players.json");
 
-// Middleware
+// ==========================================
+// MIDDLEWARE
+// ==========================================
+
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Create database folder/file
-function setupDatabase() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
+// ==========================================
+// DATABASE SETUP
+// ==========================================
 
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, "[]", "utf8");
+function setupDatabase() {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+
+    if (!fs.existsSync(DATA_FILE)) {
+      fs.writeFileSync(DATA_FILE, "[]", "utf8");
+    }
+  } catch (error) {
+    console.error("DATABASE SETUP ERROR:", error);
   }
 }
 
 setupDatabase();
 
-// Read players
+// ==========================================
+// READ PLAYERS
+// ==========================================
+
 function getPlayers() {
   try {
+    if (!fs.existsSync(DATA_FILE)) {
+      setupDatabase();
+    }
+
     const data = fs.readFileSync(DATA_FILE, "utf8");
 
     if (!data.trim()) {
@@ -42,16 +58,27 @@ function getPlayers() {
 
     const players = JSON.parse(data);
 
-    return Array.isArray(players) ? players : [];
+    if (!Array.isArray(players)) {
+      return [];
+    }
+
+    return players;
   } catch (error) {
     console.error("READ DATABASE ERROR:", error);
     return [];
   }
 }
 
-// Save players
+// ==========================================
+// SAVE PLAYERS
+// ==========================================
+
 function savePlayers(players) {
   try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+
     fs.writeFileSync(
       DATA_FILE,
       JSON.stringify(players, null, 2),
@@ -65,7 +92,10 @@ function savePlayers(players) {
   }
 }
 
-// Calculate bonus
+// ==========================================
+// CALCULATE BONUS
+// ==========================================
+
 function calculateBonus(player) {
   let bonus = 0;
 
@@ -88,15 +118,19 @@ function calculateBonus(player) {
 // ==========================================
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "tournament.html"));
+  res.sendFile(
+    path.join(__dirname, "tournament.html")
+  );
 });
 
 app.get("/admin", (req, res) => {
-  res.sendFile(path.join(__dirname, "admin.html"));
+  res.sendFile(
+    path.join(__dirname, "admin.html")
+  );
 });
 
 // ==========================================
-// HEALTH
+// HEALTH CHECK
 // ==========================================
 
 app.get("/api/health", (req, res) => {
@@ -109,53 +143,75 @@ app.get("/api/health", (req, res) => {
 });
 
 // ==========================================
-// PLAYERS
+// GET ALL PLAYERS
 // ==========================================
 
 app.get("/api/players", (req, res) => {
-  const players = getPlayers();
+  try {
+    const players = getPlayers();
 
-  res.json(
-    players.map((player) => ({
+    const result = players.map((player) => ({
       ...player,
       bonus: calculateBonus(player)
-    }))
-  );
+    }));
+
+    res.json(result);
+  } catch (error) {
+    console.error("GET PLAYERS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Could not load players."
+    });
+  }
 });
 
 // ==========================================
-// SLOTS
+// GET SLOTS
 // ==========================================
 
 app.get("/api/slots", (req, res) => {
-  const players = getPlayers();
+  try {
+    const players = getPlayers();
 
-  const bookedSlots = players
-    .map((player) => Number(player.slot))
-    .filter(
-      (slot) =>
-        Number.isInteger(slot) &&
-        slot >= 1 &&
-        slot <= TOTAL_SLOTS
-    );
+    const bookedSlots = players
+      .map((player) => Number(player.slot))
+      .filter(
+        (slot) =>
+          Number.isInteger(slot) &&
+          slot >= 1 &&
+          slot <= TOTAL_SLOTS
+      );
 
-  const availableSlots = [];
+    const availableSlots = [];
 
-  for (let slot = 1; slot <= TOTAL_SLOTS; slot++) {
-    if (!bookedSlots.includes(slot)) {
-      availableSlots.push(slot);
+    for (
+      let slot = 1;
+      slot <= TOTAL_SLOTS;
+      slot++
+    ) {
+      if (!bookedSlots.includes(slot)) {
+        availableSlots.push(slot);
+      }
     }
-  }
 
-  res.json({
-    totalSlots: TOTAL_SLOTS,
-    bookedSlots,
-    availableSlots
-  });
+    res.json({
+      totalSlots: TOTAL_SLOTS,
+      bookedSlots,
+      availableSlots
+    });
+  } catch (error) {
+    console.error("GET SLOTS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Could not load slots."
+    });
+  }
 });
 
 // ==========================================
-// REGISTER
+// REGISTER PLAYER
 // ==========================================
 
 app.post("/api/register", (req, res) => {
@@ -174,6 +230,7 @@ app.post("/api/register", (req, res) => {
 
     const slot = Number(req.body.slot);
 
+    // Check required fields
     if (!playerName || !uid || !ign) {
       return res.status(400).json({
         success: false,
@@ -181,6 +238,7 @@ app.post("/api/register", (req, res) => {
       });
     }
 
+    // Check slot
     if (
       !Number.isInteger(slot) ||
       slot < 1 ||
@@ -194,29 +252,33 @@ app.post("/api/register", (req, res) => {
 
     const players = getPlayers();
 
-    if (
-      players.some(
-        (player) => Number(player.slot) === slot
-      )
-    ) {
+    // Check duplicate slot
+    const slotAlreadyBooked = players.some(
+      (player) =>
+        Number(player.slot) === slot
+    );
+
+    if (slotAlreadyBooked) {
       return res.status(409).json({
         success: false,
         message: "This slot is already booked."
       });
     }
 
-    if (
-      players.some(
-        (player) =>
-          String(player.uid).trim() === uid
-      )
-    ) {
+    // Check duplicate UID
+    const uidAlreadyRegistered = players.some(
+      (player) =>
+        String(player.uid).trim() === uid
+    );
+
+    if (uidAlreadyRegistered) {
       return res.status(409).json({
         success: false,
         message: "This UID is already registered."
       });
     }
 
+    // Create player
     const player = {
       id: Date.now().toString(),
       playerName,
@@ -232,7 +294,10 @@ app.post("/api/register", (req, res) => {
 
     players.push(player);
 
-    if (!savePlayers(players)) {
+    // Save
+    const saved = savePlayers(players);
+
+    if (!saved) {
       return res.status(500).json({
         success: false,
         message: "Could not save player."
@@ -260,141 +325,184 @@ app.post("/api/register", (req, res) => {
 // ==========================================
 
 app.get("/api/stats", (req, res) => {
-  const players = getPlayers();
+  try {
+    const players = getPlayers();
 
-  const paidPlayers = players.filter(
-    (player) => player.payment === "paid"
-  );
+    const paidPlayers = players.filter(
+      (player) =>
+        player.payment === "paid"
+    );
 
-  const totalKills = players.reduce(
-    (total, player) =>
-      total + Number(player.kills || 0),
-    0
-  );
+    const totalKills = players.reduce(
+      (total, player) =>
+        total + Number(player.kills || 0),
+      0
+    );
 
-  const totalBonus = players.reduce(
-    (total, player) =>
-      total + calculateBonus(player),
-    0
-  );
+    const totalBonus = players.reduce(
+      (total, player) =>
+        total + calculateBonus(player),
+      0
+    );
 
-  res.json({
-    totalSlots: TOTAL_SLOTS,
-    totalPlayers: players.length,
-    bookedSlots: players.length,
-    availableSlots:
-      TOTAL_SLOTS - players.length,
-    paidPlayers: paidPlayers.length,
-    totalKills,
-    totalBonus,
-    entryFee: ENTRY_FEE
-  });
+    res.json({
+      totalSlots: TOTAL_SLOTS,
+      totalPlayers: players.length,
+      bookedSlots: players.length,
+      availableSlots:
+        TOTAL_SLOTS - players.length,
+      paidPlayers: paidPlayers.length,
+      totalKills,
+      totalBonus,
+      entryFee: ENTRY_FEE
+    });
+
+  } catch (error) {
+    console.error("STATS ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Could not load stats."
+    });
+  }
 });
 
 // ==========================================
-// PAYMENT
+// PAYMENT STATUS
 // ==========================================
 
 app.patch(
   "/api/players/:slot/payment",
   (req, res) => {
-    const slot = Number(req.params.slot);
-    const payment = req.body.payment;
+    try {
+      const slot = Number(req.params.slot);
+      const payment = req.body.payment;
 
-    if (
-      payment !== "paid" &&
-      payment !== "pending"
-    ) {
-      return res.status(400).json({
+      if (
+        payment !== "paid" &&
+        payment !== "pending"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid payment status."
+        });
+      }
+
+      const players = getPlayers();
+
+      const player = players.find(
+        (p) => Number(p.slot) === slot
+      );
+
+      if (!player) {
+        return res.status(404).json({
+          success: false,
+          message: "Player not found."
+        });
+      }
+
+      player.payment = payment;
+
+      const saved = savePlayers(players);
+
+      if (!saved) {
+        return res.status(500).json({
+          success: false,
+          message: "Could not save payment status."
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Payment status updated.",
+        player
+      });
+
+    } catch (error) {
+      console.error(
+        "PAYMENT UPDATE ERROR:",
+        error
+      );
+
+      res.status(500).json({
         success: false,
-        message: "Invalid payment status."
+        message: "Could not update payment status."
       });
     }
-
-    const players = getPlayers();
-
-    const player = players.find(
-      (p) => Number(p.slot) === slot
-    );
-
-    if (!player) {
-      return res.status(404).json({
-        success: false,
-        message: "Player not found."
-      });
-    }
-
-    player.payment = payment;
-
-    if (!savePlayers(players)) {
-      return res.status(500).json({
-        success: false,
-        message: "Could not save payment."
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Payment updated.",
-      player
-    });
   }
 );
 
 // ==========================================
-// RESULT
+// UPDATE RESULT
 // ==========================================
 
 app.patch(
   "/api/players/:slot/result",
   (req, res) => {
-    const slot = Number(req.params.slot);
+    try {
+      const slot = Number(req.params.slot);
 
-    const players = getPlayers();
+      const players = getPlayers();
 
-    const player = players.find(
-      (p) => Number(p.slot) === slot
-    );
+      const player = players.find(
+        (p) => Number(p.slot) === slot
+      );
 
-    if (!player) {
-      return res.status(404).json({
+      if (!player) {
+        return res.status(404).json({
+          success: false,
+          message: "Player not found."
+        });
+      }
+
+      let kills = Number(
+        req.body.kills
+      );
+
+      if (!Number.isFinite(kills)) {
+        kills = 0;
+      }
+
+      kills = Math.max(
+        0,
+        Math.floor(kills)
+      );
+
+      player.kills = kills;
+
+      player.booyah =
+        req.body.booyah === true ||
+        req.body.booyah === "true";
+
+      player.bonus =
+        calculateBonus(player);
+
+      const saved = savePlayers(players);
+
+      if (!saved) {
+        return res.status(500).json({
+          success: false,
+          message: "Could not save result."
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Result updated.",
+        player
+      });
+
+    } catch (error) {
+      console.error(
+        "RESULT UPDATE ERROR:",
+        error
+      );
+
+      res.status(500).json({
         success: false,
-        message: "Player not found."
+        message: "Could not update result."
       });
     }
-
-    let kills = Number(req.body.kills);
-
-    if (!Number.isFinite(kills)) {
-      kills = 0;
-    }
-
-    kills = Math.max(
-      0,
-      Math.floor(kills)
-    );
-
-    player.kills = kills;
-
-    player.booyah =
-      req.body.booyah === true ||
-      req.body.booyah === "true";
-
-    player.bonus =
-      calculateBonus(player);
-
-    if (!savePlayers(players)) {
-      return res.status(500).json({
-        success: false,
-        message: "Could not save result."
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Result updated.",
-      player
-    });
   }
 );
 
@@ -405,44 +513,71 @@ app.patch(
 app.delete(
   "/api/players/:slot",
   (req, res) => {
-    const slot = Number(req.params.slot);
+    try {
+      const slot = Number(req.params.slot);
 
-    const players = getPlayers();
+      const players = getPlayers();
 
-    const exists = players.some(
-      (player) =>
-        Number(player.slot) === slot
-    );
-
-    if (!exists) {
-      return res.status(404).json({
-        success: false,
-        message: "Player not found."
-      });
-    }
-
-    const updatedPlayers =
-      players.filter(
+      const exists = players.some(
         (player) =>
-          Number(player.slot) !== slot
+          Number(player.slot) === slot
       );
 
-    if (!savePlayers(updatedPlayers)) {
-      return res.status(500).json({
+      if (!exists) {
+        return res.status(404).json({
+          success: false,
+          message: "Player not found."
+        });
+      }
+
+      const updatedPlayers =
+        players.filter(
+          (player) =>
+            Number(player.slot) !== slot
+        );
+
+      const saved =
+        savePlayers(updatedPlayers);
+
+      if (!saved) {
+        return res.status(500).json({
+          success: false,
+          message: "Could not remove player."
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Player removed."
+      });
+
+    } catch (error) {
+      console.error(
+        "DELETE PLAYER ERROR:",
+        error
+      );
+
+      res.status(500).json({
         success: false,
         message: "Could not remove player."
       });
     }
-
-    res.json({
-      success: true,
-      message: "Player removed."
-    });
   }
 );
 
 // ==========================================
-// START
+// 404 API HANDLER
+// ==========================================
+
+app.use("/api", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "API route not found."
+  });
+});
+
+// ==========================================
+// START SERVER
 // ==========================================
 
 app.listen(PORT, () => {
@@ -450,4 +585,3 @@ app.listen(PORT, () => {
     `FF Tournament Server running on port ${PORT}`
   );
 });
-```
